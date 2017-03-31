@@ -33,5 +33,7 @@ private:
 	UPROPERTY(EditAnywhere)
 		float CrosshairY = 0.333333;
 
+	UPROPERTY(EditAnywhere)
+		float LineLength = 1000000.0;
 
 };

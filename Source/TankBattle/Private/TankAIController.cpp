@@ -13,7 +13,8 @@ void ATankAIController::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("AI Controller"));
 
 	AITank = GetControlledTank();
-
+	PlayerTank = GetPlayerTank();
+	/*
 	if (AITank)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AI is : %s"), *AITank->GetName());
@@ -23,7 +24,7 @@ void ATankAIController::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("AI is Not Found"));
 	}
 
-	PlayerTank = GetPlayerTank();
+	
 	if (PlayerTank)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Player is : %s"), *PlayerTank->GetName());
@@ -31,6 +32,19 @@ void ATankAIController::BeginPlay()
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("Player is Not Found"));
+	}
+	*/
+}
+
+void ATankAIController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	PlayerTank = GetPlayerTank();
+
+	if (PlayerTank)
+	{
+		AITank->AimAt(PlayerTank->GetActorLocation());
 	}
 
 }
