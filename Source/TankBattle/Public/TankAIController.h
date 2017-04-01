@@ -16,8 +16,6 @@ class TANKBATTLE_API ATankAIController : public AAIController
 	
 	
 public:
-	ATank* GetControlledTank() const;
-	ATank* GetPlayerTank() const;
 	ATank* AITank = nullptr;
 	ATank* PlayerTank = nullptr;
 

@@ -8,7 +8,7 @@
 /**
  * Hold Tank Barrel information and movements
  */
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), hidecategories = ("Collision"))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))// hidecategories = ("Collision"))
 class TANKBATTLE_API UTankBarrel : public UStaticMeshComponent
 {
 	GENERATED_BODY()
@@ -18,7 +18,7 @@ public:
 	
 private:
 	UPROPERTY(EditAnywhere, Category = "Setup")
-		float MaxDegreesPerSecond = 5;
+		float MaxDegreesPerSecond = 10;
 
 	UPROPERTY(EditAnywhere, Category = "Setup")
 		float MaxElevation = 40;

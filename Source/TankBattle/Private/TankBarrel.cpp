@@ -8,7 +8,7 @@
 void UTankBarrel::Elevate(float DegreesPerSecond)
 {
 	//Bound Speed of movement
-	//DegreesPerSecond = FMath::Clamp<float>(DegreesPerSecond, -1, 1);
+	DegreesPerSecond = FMath::Clamp<float>(DegreesPerSecond, -1, 1);
 	
 	//Move the barrel the right amount this frame
 	//Give a max elevation speed and the frame time
