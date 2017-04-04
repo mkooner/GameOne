@@ -23,6 +23,10 @@ void ATankAIController::Tick(float DeltaTime)
 	{
 		AITank->AimAt(PlayerTank->GetActorLocation());
 
+		//Move towards Player
+		auto move = MoveToActor(PlayerTank, AcceptanceRadius);
+
+
 		//Fire if Ready
 		AITank->Fire(); //Do not fire every frame
 	}
