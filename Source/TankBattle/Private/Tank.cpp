@@ -3,6 +3,8 @@
 
 #include "TankBattle.h"
 #include "Tank.h"
+#include "TankAimComponent.h"
+#include "TankMovementComponent.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
 #include "Projectile.h"
@@ -16,6 +18,7 @@ ATank::ATank()
 	// No need to protect pointers as added at construction
 
 	TankAim = CreateDefaultSubobject<UTankAimComponent>(FName("Aim Component"));
+	//TankMove = CreateDefaultSubobject<UTankMovementComponent>(FName("Move Component"));
 }
 
 
@@ -49,7 +52,7 @@ void ATank::Fire()
 	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTime;
 
 	auto Time = GetWorld()->GetTimeSeconds();
-	UE_LOG(LogTemp, Warning, TEXT("%f: Tank Fires"), Time);
+	//UE_LOG(LogTemp, Warning, TEXT("%f: Tank Fires"), Time);
 
 	if (Barrel && isReloaded)
 	{
@@ -59,3 +62,4 @@ void ATank::Fire()
 		LastFireTime = FPlatformTime::Seconds();
 	}
 }
+

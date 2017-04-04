@@ -2,13 +2,15 @@
 
 #pragma once
 
-#include "TankAimComponent.h"
+
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h" //Paste new classes above
 
 class UTankBarrel;
 class UTankTurret;
 class AProjectile; 
+class UTankMovementComponent;
+class UTankAimComponent; 
 
 UCLASS()
 class TANKBATTLE_API ATank : public APawn
@@ -33,6 +35,8 @@ protected:
 	// Called when the game starts or when spawned
 	
 	UTankAimComponent* TankAim = nullptr;
+	UPROPERTY(BlueprintReadOnly)
+	UTankMovementComponent* TankMove = nullptr;
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
 	float ReloadTime = 3.0;
