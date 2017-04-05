@@ -22,21 +22,27 @@ public:
 	ATank();
 	void AimAt(FVector Hit);
 
+	/*
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetBarrelReference(UTankBarrel* BarrelToSet);
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetTurretReference(UTankTurret* TurretToSet);
-
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	void Fire();
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Action")
+		void Fire();
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+		void SetAim(UTankAimComponent* AimToSet);
 
 protected:
 	// Called when the game starts or when spawned
 	
+	
+	UPROPERTY(BlueprintReadOnly)
 	UTankAimComponent* TankAim = nullptr;
 	UPROPERTY(BlueprintReadOnly)
 	UTankMovementComponent* TankMove = nullptr;
+	
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
 	float ReloadTime = 3.0;

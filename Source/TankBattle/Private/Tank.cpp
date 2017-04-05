@@ -17,7 +17,7 @@ ATank::ATank()
 
 	// No need to protect pointers as added at construction
 
-	TankAim = CreateDefaultSubobject<UTankAimComponent>(FName("Aim Component"));
+	//TankAim = CreateDefaultSubobject<UTankAimComponent>(FName("Aim Component"));
 	//TankMove = CreateDefaultSubobject<UTankMovementComponent>(FName("Move Component"));
 }
 
@@ -36,15 +36,10 @@ void ATank::AimAt(FVector Hit)
 
 }
 
-void ATank::SetBarrelReference(UTankBarrel* BarrelToSet)
+void ATank::SetAim(UTankAimComponent* AimToSet)
 {
-	TankAim->SetBarrelReference(BarrelToSet);
-	Barrel = BarrelToSet;
-}
-
-void ATank::SetTurretReference(UTankTurret* TurretToSet)
-{
-	TankAim->SetTurretReference(TurretToSet);
+	TankAim = AimToSet;
+	
 }
 
 void ATank::Fire()
@@ -53,6 +48,7 @@ void ATank::Fire()
 
 	auto Time = GetWorld()->GetTimeSeconds();
 	//UE_LOG(LogTemp, Warning, TEXT("%f: Tank Fires"), Time);
+	Barrel = TankAim->GetBarrelReference();
 
 	if (Barrel && isReloaded)
 	{
