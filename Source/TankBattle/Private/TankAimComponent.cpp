@@ -5,7 +5,8 @@
 #include "TankAimComponent.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
-
+#include "TankMovementComponent.h"
+#include "Projectile.h"
 
 // Sets default values for this component's properties
 UTankAimComponent::UTankAimComponent()
@@ -23,7 +24,7 @@ void UTankAimComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	LastFireTime = FPlatformTime::Seconds();
 	
 }
 
@@ -33,10 +34,32 @@ void UTankAimComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	bool Reloaded = (FPlatformTime::Seconds() - LastFireTime) < ReloadTime;
+
+	if (Reloaded)
+		{	    FiringState = EFiringStatus::Reloading;	}
+	else if (IsBarrelMoving())
+	    {		FiringState = EFiringStatus::Aiming;	}
+	else 
+		{ FiringState = EFiringStatus::Locked; }
+
 }
 
-void UTankAimComponent::AimAt(FVector Hit, float LaunchSpeed)
+bool UTankAimComponent::IsBarrelMoving()
+{
+	if (!ensure(Barrel)) { return false; }
+
+	FVector CurrentDirection = Barrel->GetForwardVector();
+	
+	if (CurrentDirection.Equals(GlobalAimDirection, 0.001))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void UTankAimComponent::AimAt(FVector Hit)
 {
 	if (!Barrel) { return; }
 
@@ -54,8 +77,8 @@ void UTankAimComponent::AimAt(FVector Hit, float LaunchSpeed)
 		0,
 		ESuggestProjVelocityTraceOption::DoNotTrace))
 	{
-		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
-		MoveBarrel(AimDirection);
+		GlobalAimDirection = OutLaunchVelocity.GetSafeNormal();
+		MoveBarrel(GlobalAimDirection);
 	}
 	else
 	{
@@ -90,4 +113,19 @@ void UTankAimComponent::MoveBarrel(FVector AimDirection)
 	Barrel->Elevate(DeltaRotator.Pitch);
 	Turret->Rotate(DeltaRotator.Yaw);
 	
+}
+
+void UTankAimComponent::Fire()
+{
+	auto Time = GetWorld()->GetTimeSeconds();
+	//UE_LOG(LogTemp, Warning, TEXT("%f: Tank Fires"), Time);
+
+
+	if (Barrel && FiringState != EFiringStatus::Reloading)
+	{
+		// Spawn projectile at barrel socket
+		auto spawn = GetWorld()->SpawnActor<AProjectile>(Projectile, Barrel->GetSocketLocation(FName("Socket")), Barrel->GetSocketRotation(FName("Socket")));
+		spawn->Launch(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+	}
 }

@@ -1,7 +1,6 @@
 // Mehrab Kooner Copyright 
 
 #include "TankBattle.h"
-#include "Tank.h"
 #include "TankPlayerController.h"
 #include "TankAimComponent.h"
 
@@ -12,7 +11,7 @@ void ATankPlayerController::BeginPlay()
 
 	UE_LOG(LogTemp, Warning, TEXT("Player Controller"));
 
-	PlayerTank = GetControlledTank();
+	auto PlayerTank = GetPawn();
 
 	if (PlayerTank)
 	{
@@ -27,13 +26,6 @@ void ATankPlayerController::BeginPlay()
     }
 }
 
-ATank* ATankPlayerController::GetControlledTank() const
-{
-
-	return Cast<ATank>(GetPawn());
-
-}
-
 void ATankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -45,7 +37,9 @@ void ATankPlayerController::Tick(float DeltaTime)
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!GetControlledTank()) { return; }
+	auto Tank = GetPawn();
+
+	if (!Tank) { return; } //Exit if not possessing a player
 
 	
 	FVector HitLocation; //Out Parameter
@@ -54,7 +48,9 @@ void ATankPlayerController::AimTowardsCrosshair()
 	// Get World Location of linetrace through crosshair
 	if (GetSightRayHitLocation(HitLocation))
 	{
-		GetControlledTank()->AimAt(HitLocation);
+		auto AimingComponent = Tank->FindComponentByClass<UTankAimComponent>();
+
+		AimingComponent->AimAt(HitLocation);
 		
 		//UE_LOG(LogTemp, Warning, TEXT("Hit Location = %s"), *HitLocation.ToString());
 	}
