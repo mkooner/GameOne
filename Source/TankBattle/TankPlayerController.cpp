@@ -43,10 +43,10 @@ void ATankPlayerController::AimTowardsCrosshair()
 
 	
 	FVector HitLocation; //Out Parameter
-	
+	bool GotHit = GetSightRayHitLocation(HitLocation);
 
 	// Get World Location of linetrace through crosshair
-	if (GetSightRayHitLocation(HitLocation))
+	if (GotHit)
 	{
 		auto AimingComponent = Tank->FindComponentByClass<UTankAimComponent>();
 

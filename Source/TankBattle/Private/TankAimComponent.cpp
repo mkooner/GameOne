@@ -33,16 +33,27 @@ void UTankAimComponent::BeginPlay()
 void UTankAimComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (Ammo > 0)
+	{
+		bool Reloaded = (FPlatformTime::Seconds() - LastFireTime) < ReloadTime;
 
-	bool Reloaded = (FPlatformTime::Seconds() - LastFireTime) < ReloadTime;
-
-	if (Reloaded)
-		{	    FiringState = EFiringStatus::Reloading;	}
-	else if (IsBarrelMoving())
-	    {		FiringState = EFiringStatus::Aiming;	}
-	else 
-		{ FiringState = EFiringStatus::Locked; }
-
+		if (Reloaded)
+		{
+			FiringState = EFiringStatus::Reloading;
+		}
+		else if (IsBarrelMoving())
+		{
+			FiringState = EFiringStatus::Aiming;
+		}
+		else
+		{
+			FiringState = EFiringStatus::Locked;
+		}		
+	}
+	else
+	{
+		FiringState = EFiringStatus::Empty;
+	}
 }
 
 bool UTankAimComponent::IsBarrelMoving()
@@ -111,8 +122,22 @@ void UTankAimComponent::MoveBarrel(FVector AimDirection)
     FRotator DeltaRotator = AimRotator - BarrelRotator;
 
 	Barrel->Elevate(DeltaRotator.Pitch);
-	Turret->Rotate(DeltaRotator.Yaw);
 	
+	if (FMath::Abs(DeltaRotator.Yaw) > 180)
+	{
+		Turret->Rotate(-DeltaRotator.Yaw); //If we have to move more than 180 degrees, we go oppsite direction
+	}
+	else
+	{
+		Turret->Rotate(DeltaRotator.Yaw);
+	}
+	
+	
+}
+
+int32 UTankAimComponent::GetAmmo()
+{
+	return Ammo;
 }
 
 void UTankAimComponent::Fire()
@@ -121,11 +146,18 @@ void UTankAimComponent::Fire()
 	//UE_LOG(LogTemp, Warning, TEXT("%f: Tank Fires"), Time);
 
 
-	if (Barrel && FiringState != EFiringStatus::Reloading)
+	if (Barrel && FiringState != EFiringStatus::Reloading && FiringState != EFiringStatus::Empty)
 	{
 		// Spawn projectile at barrel socket
 		auto spawn = GetWorld()->SpawnActor<AProjectile>(Projectile, Barrel->GetSocketLocation(FName("Socket")), Barrel->GetSocketRotation(FName("Socket")));
 		spawn->Launch(LaunchSpeed);
 		LastFireTime = FPlatformTime::Seconds();
+		if(Ammo > 0)
+		Ammo = Ammo - 1;
 	}
+}
+
+EFiringStatus UTankAimComponent::GetFiringState() const
+{
+	return FiringState;
 }

@@ -23,6 +23,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	float AcceptanceRadius = 3000.0; //How close can the tank get to the player
+
+	UPROPERTY(EditAnywhere, Category = "Firing")
+	float AcceptanceRadius = 8000.0; //How close can the tank get to the player
 	
 };

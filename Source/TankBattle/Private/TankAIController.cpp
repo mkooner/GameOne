@@ -29,9 +29,10 @@ void ATankAIController::Tick(float DeltaTime)
 		//Move towards Player
 		auto move = MoveToActor(PlayerTank, AcceptanceRadius);
 
-
-		//Fire if Ready
-		AIAim->Fire(); //Do not fire every frame
+		if (AIAim->GetFiringState() != EFiringStatus::Reloading && AIAim->GetFiringState() != EFiringStatus::Empty)
+		{   //Fire if Aiming or Locked
+			AIAim->Fire(); //Do not fire every frame
+		}
 	}
 
 }
