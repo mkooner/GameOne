@@ -27,7 +27,11 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 		void FoundAimingComponent(UTankAimComponent* AimCompRef);
 
-	
+	virtual void SetPawn(APawn* InPawn) override;
+
+	UFUNCTION()
+		void TankDeath(); //How close can the tank get to the player
+
 private:
 	void AimTowardsCrosshair(); //Starts the tank moving the barrel
 	bool GetSightRayHitLocation(FVector& Hit) const;
@@ -40,4 +44,5 @@ private:
 	UPROPERTY(EditAnywhere)
 		float LineLength = 1000000.0;
 
+	
 };

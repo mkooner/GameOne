@@ -18,7 +18,11 @@ ATank::ATank()
 	//TankMove = CreateDefaultSubobject<UTankMovementComponent>(FName("Move Component"));
 }
 
-
+void ATank::BeginPlay()
+{
+	Super::BeginPlay();
+	Health = StartHealth;
+}
 
 // Called to bind functionality to input
 void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -27,17 +31,25 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-/*
-void ATank::AimAt(FVector Hit)
-{
-	TankAim->AimAt(Hit, LaunchSpeed);
 
-}
-
-void ATank::SetAim(UTankAimComponent* AimToSet)
+float ATank::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser)
 {
-	TankAim = AimToSet;
+	int32 DamagePoints = FPlatformMath::RoundToInt(DamageAmount);
 	
-}
-*/
+	// Call the base class - this will tell us how much damage to apply  
+	int32 ActualDamage = FMath::Clamp<int32>(DamagePoints, 0, Health);
+	
+	Health -= ActualDamage;
+		
+	if (Health <= 0)
+	{
+		Death.Broadcast();
+	}
 
+	return ActualDamage;
+}
+
+float ATank::GetHealth() const
+{
+	return (float)Health / (float)StartHealth;
+}

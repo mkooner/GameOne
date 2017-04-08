@@ -3,7 +3,7 @@
 #include "TankBattle.h"
 #include "TankPlayerController.h"
 #include "TankAimComponent.h"
-
+#include "Tank.h"
 
 void ATankPlayerController::BeginPlay()
 {
@@ -86,7 +86,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& Hit) const
 		FVector End = WorldDirection * LineLength + Start;
 
 		// Line-trace along that look direction, and see what we hit (up to max range)
-		if (World->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility))
+		if (World->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Camera))
 		{
 			Hit = HitResult.Location;
 			return true;
@@ -96,4 +96,27 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& Hit) const
 	Hit = FVector();
 	
 	return false; 
+}
+
+void ATankPlayerController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	if (InPawn)
+	{
+		auto MyTank = Cast<ATank>(InPawn);
+
+		if (!ensure(MyTank)) { return; }
+
+		// Subscribe our local method to the tank's death event
+		MyTank->Death.AddUniqueDynamic(this, &ATankPlayerController::TankDeath);
+
+	}
+
+
+}
+
+void ATankPlayerController::TankDeath()
+{
+	StartSpectatingOnly();
 }

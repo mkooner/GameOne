@@ -12,6 +12,10 @@ class AProjectile;
 class UTankMovementComponent;
 class UTankAimComponent; 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTankDelegate);
+
+
+
 UCLASS()
 class TANKBATTLE_API ATank : public APawn
 {
@@ -20,6 +24,8 @@ class TANKBATTLE_API ATank : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ATank();
+
+	FTankDelegate Death;
 	
 	/*
 	UFUNCTION(BlueprintCallable, Category = Setup)
@@ -34,9 +40,7 @@ public:
 
 
 protected:
-	// Called when the game starts or when spawned
-	
-	
+
 	/*
 	UPROPERTY(BlueprintReadOnly)
 	UTankAimComponent* TankAim = nullptr;
@@ -50,10 +54,20 @@ protected:
 
 
 public:	
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void BeginPlay() override;
 
-		
+	UPROPERTY(EditDefaultsOnly)
+	int32 StartHealth = 100;
+	UPROPERTY(VisibleAnywhere, Category = "Health")
+	int32 Health;
+
+	// Called by the engine when the Actor is damaged
+	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
+
+	//Returns health to UI bar
+	UFUNCTION(BlueprintPure, Category="Health")
+	float GetHealth() const;
 };

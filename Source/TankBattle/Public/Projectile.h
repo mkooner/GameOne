@@ -31,6 +31,9 @@ private:
 	UPROPERTY(EditAnywhere)
 		float DestroyTime = 5.0;
 
+	UPROPERTY(EditAnywhere)
+		float Damage = 20.0;
+
 	UProjectileMovementComponent* ProjectileMovement = nullptr;
 
 	UPROPERTY(VisibleAnywhere)

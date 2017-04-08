@@ -66,6 +66,16 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 
 	FTimerHandle Timer;
 
+	UGameplayStatics::ApplyRadialDamage(
+		this,
+		Damage,
+		GetActorLocation(),
+		Force->Radius, //Bound together for consistency
+		UDamageType::StaticClass(),
+		TArray<AActor*>() //Damage all actors
+	);
+
+
 	//GetWorld()->GetTimerManager().SetTimer(Timer, this, &AProjectile::OnTimerExpire, DestroyTime, false);
 	GetWorldTimerManager().SetTimer(Timer, this, &AProjectile::OnTimerExpire, DestroyTime, false);
 }

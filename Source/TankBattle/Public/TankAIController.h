@@ -14,7 +14,8 @@ UCLASS()
 class TANKBATTLE_API ATankAIController : public AAIController
 {
 	GENERATED_BODY()
-	
+		
+
 	
 public:
 	ATank* AITank = nullptr;
@@ -24,7 +25,12 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void SetPawn(APawn* InPawn) override;
+
 	UPROPERTY(EditAnywhere, Category = "Firing")
 	float AcceptanceRadius = 8000.0; //How close can the tank get to the player
+
+	UFUNCTION()
+		void TankDeath(); //How close can the tank get to the player
 	
 };
